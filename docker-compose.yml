@@ -1,0 +1,25 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: autopecasdb
+      POSTGRES_USER: autopecas
+      POSTGRES_PASSWORD: senha123
+    ports:
+      - "5433:5432" # Exposto no host, mas dentro do Docker é 5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/autopecasdb # Porta 5432 dentro da rede Docker
+      SPRING_DATASOURCE_USERNAME: autopecas
+      SPRING_DATASOURCE_PASSWORD: senha123
+
+volumes:
+  postgres-data:
